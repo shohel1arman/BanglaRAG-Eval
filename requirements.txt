@@ -1,0 +1,17 @@
+# Core research environment
+#
+# The exact dependency versions will be frozen after the pilot
+# experimental setup is finalized.
+#
+# Do not add packages here simply because they may be useful.
+# Every dependency should have a documented role in the benchmark.
+
+numpy
+pandas
+scikit-learn
+scipy
+pyyaml
+tqdm
+
+# NLP / RAG dependencies will be added after the evaluator
+# and benchmark pipeline are finalized.
