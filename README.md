@@ -45,11 +45,23 @@ Install the project and run all tests:
 PYTHONPATH=src .venv/bin/python -m pytest -q
 ```
 
-Run the complete active campaign:
+Run the single-model pilot (recommended first run):
 
 ```bash
-.venv/bin/python scripts/run_campaign.py all
+.venv/bin/python scripts/run_pipeline.py \
+  --model qwen3:8b \
+  --output data/pilot_qwen3_8b.jsonl
 ```
+
+Use `--no-ollama` to verify the pipeline locally without starting Ollama:
+
+```bash
+.venv/bin/python scripts/run_pipeline.py \
+  --no-ollama \
+  --output data/pilot_offline.jsonl
+```
+
+### Run the complete active campaign
 
 The active v3.1 campaign is a new version and must not overwrite the validated
 10,000-record baseline. It generates 30,000 records from six local Ollama
@@ -75,6 +87,32 @@ ollama pull qwen3:32b
 ollama pull llama3.3:70b
 ollama pull gemma3:27b
 ollama pull deepseek-r1:32b
+```
+
+Before starting the campaign, verify that the configured source and prepared
+question files exist:
+
+```bash
+test -f data/raw/BanglaQuADv1.0-train.json
+test -f data/intermediate/campaign_10000_v2_questions.jsonl
+ollama list
+```
+
+Then run the canonical campaign entry point:
+
+```bash
+.venv/bin/python scripts/run_campaign.py all
+```
+
+The `all` phase is resumable and runs preparation, review-packet
+construction, generation, and finalization in order. If a phase needs to be
+rerun or resumed independently, use:
+
+```bash
+.venv/bin/python scripts/run_campaign.py prepare
+.venv/bin/python scripts/run_campaign.py review
+.venv/bin/python scripts/run_campaign.py generate
+.venv/bin/python scripts/run_campaign.py finalize
 ```
 
 The new output is written to
@@ -913,16 +951,13 @@ Its 50 rows are pending two independent construction reviews. The halted
 175-row v2 checkpoint is audit-only; any approved v3 generation must use a new
 checkpoint path. See [pilot_design.md](docs/pilot_design.md).
 
-### Generate the unreviewed v3 campaign
+### Active campaign protocol notes
 
 The owner-authorized v3 run uses 1,000 QAs, five blocked language conditions,
-five evidence conditions, paired Qwen3/Gemma 3 outputs, and deduplicated BM25
-retrieval. It produces 10,000 explicitly unreviewed research records; it does
-not create human gold labels or reviewer decisions.
-
-```bash
-.venv/bin/python scripts/run_campaign.py all
-```
+five evidence conditions, six configured Ollama generators, and deduplicated
+BM25 retrieval. It produces 30,000 explicitly unreviewed research records; it
+does not create human gold labels or reviewer decisions. Use the canonical
+`run_campaign.py all` command above.
 
 Progress is recorded in `logs/campaign_30000_v3_unreviewed.log` and
 `checkpoints/campaign_30000_v3_unreviewed_working.jsonl`. The launcher resumes
