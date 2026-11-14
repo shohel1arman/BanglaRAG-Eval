@@ -54,7 +54,8 @@ Three evaluators run without any API (lexical baseline, answer relevance,
 exact match). Three use Ollama (local LLM, no paid API). The LLM-based
 evaluators use a different model from the generator (cross-model) to
 limit self-preference (circularity control). The judge model is
-configured via `JUDGE_MODEL` environment variable.
+configured via `BANGLARAG_JUDGE_MODEL` environment variable. The legacy
+`JUDGE_MODEL` variable remains supported as a fallback.
 
 Planned adapters (implemented only when dependencies/API access exist):
 RAGAS faithfulness, ARES where technically feasible, an encoder detector.

@@ -105,7 +105,10 @@ class NLIEvaluator(Evaluator):
         base_url: str | None = None,
         timeout: int = 60,
     ):
-        self.judge_model = judge_model or os.environ.get("JUDGE_MODEL", "qwen3:8b")
+        self.judge_model = judge_model or os.environ.get(
+            "BANGLARAG_JUDGE_MODEL",
+            os.environ.get("JUDGE_MODEL", "qwen3:8b"),
+        )
         self.base_url = base_url or os.environ.get(
             "OLLAMA_BASE_URL", "http://localhost:11434"
         )
