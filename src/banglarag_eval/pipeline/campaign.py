@@ -19,6 +19,7 @@ import yaml
 from bangla_nlpkit import romanize
 
 from banglarag_eval.schema import validate_record
+from banglarag_eval.env import env_list
 
 from .generator import GenerationResult, generate
 from .retriever import RetrievedDocument, RetrievalResult, build_retriever
@@ -134,9 +135,20 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def load_campaign_config(path: str | Path) -> dict[str, Any]:
+def load_campaign_config(
+    path: str | Path, *, use_environment: bool = False
+) -> dict[str, Any]:
     with open(path, encoding="utf-8") as handle:
         config = yaml.safe_load(handle)
+    configured_models = env_list("BANGLARAG_GENERATOR_MODELS") if use_environment else ()
+    if configured_models:
+        config["generator_models"] = list(configured_models)
+        config["target_records"] = (
+            config["base_examples"]
+            * (1 if config.get("experimental_design", "full_factorial") == "blocked_language" else len(config["language_conditions"]))
+            * len(config["evidence_conditions"])
+            * len(config["generator_models"])
+        )
     language_factor = (
         1
         if config.get("experimental_design", "full_factorial") == "blocked_language"

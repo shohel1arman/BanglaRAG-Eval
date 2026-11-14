@@ -22,6 +22,7 @@ and have access to `shohel1arman/BanglaRAG-Eval`.
 
 ```bash
 cd "/Users/dipro/Bangla Rag/BanglaRAG-Eval"
+cp .env.example .env
 gh release download dataset-v3 \
   --repo shohel1arman/BanglaRAG-Eval \
   --pattern campaign_10000_v3_unreviewed.jsonl \

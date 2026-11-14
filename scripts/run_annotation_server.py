@@ -17,6 +17,7 @@ with validated annotations.
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -43,13 +44,13 @@ def main() -> None:
     )
     parser.add_argument(
         "--host",
-        default="127.0.0.1",
+        default=os.environ.get("BANGLARAG_ANNOTATION_HOST", "127.0.0.1"),
         help="Bind address (default: 127.0.0.1 — local only).",
     )
     parser.add_argument(
         "--port",
         type=int,
-        default=5000,
+        default=int(os.environ.get("BANGLARAG_ANNOTATION_PORT", "5000")),
         help="Port (default: 5000).",
     )
     parser.add_argument(
