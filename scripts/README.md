@@ -1,14 +1,21 @@
-# scripts/
+# Maintained scripts
 
-- `build_synthetic_fixture.py` — deterministically regenerates
-  `data/fixtures/synthetic_fixture_v0.jsonl` (10 synthetic pipeline-test
-  examples). Safe to re-run; tests enforce builder/output sync.
+The repository keeps one canonical entry point for each distinct workflow.
+Version-specific shell launchers and one-time migration/audit utilities are
+not maintained.
 
-Milestone 2+: pilot generation, annotation export/import, evaluator runs,
-analysis scripts.
+- `run_pipeline.py` — run the single-model pilot pipeline. Select the model
+  with `--model MODEL` or `OLLAMA_MODEL`.
+- `run_campaign.py` — run the versioned campaign through `prepare`, `repair`,
+  `propose-contradictions`, `review`, `generate`, `finalize`, or `all`.
+- `run_evaluators.py` — run automatic evaluators and compute metrics.
+- `setup_annotation.py` — create a human-annotation working copy.
+- `run_annotation_server.py` — start the local Flask annotation UI.
+- `build_synthetic_fixture.py` — regenerate the deterministic test fixture;
+  tests enforce builder/output synchronization.
 
-- `run_campaign.py` — question `prepare`/`repair`, contradiction proposal,
-  construction `review`, and resumable `generate`/`finalize` phases. Required
-  review gates fail closed and model failures never become placeholder answers.
-- `run_campaign_10000_v3.sh` — resumable owner-authorized v3.1 chain. It writes
-  only explicitly unreviewed records until genuine review is completed.
+For the complete campaign workflow, use the canonical Python command:
+
+```bash
+.venv/bin/python scripts/run_campaign.py all
+```

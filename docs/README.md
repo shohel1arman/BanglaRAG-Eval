@@ -58,4 +58,3 @@ docs/
 | Evaluator runner | `scripts/run_evaluators.py` | Run evaluators + compute metrics |
 | Annotation server | `scripts/run_annotation_server.py` | Flask web UI for annotation |
 | Annotation setup | `scripts/setup_annotation.py` | Create annotation working copy |
-| Schema migration | `scripts/migrate_schema.py` | Migrate old nested format to flat |

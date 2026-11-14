@@ -165,7 +165,7 @@ manually configured candidates retain their own provenance. The pending
 Run or resume the complete chain with:
 
 ```bash
-screen -dmS campaign10kv3 zsh scripts/run_campaign_10000_v3.sh
+.venv/bin/python scripts/run_campaign.py all
 ```
 
 The launcher appends to `logs/campaign_10000_v3_unreviewed.log`, resumes by

@@ -48,7 +48,7 @@ PYTHONPATH=src .venv/bin/python -m pytest -q
 Run the complete active campaign:
 
 ```bash
-zsh scripts/run_campaign_10000_v3.sh
+.venv/bin/python scripts/run_campaign.py all
 ```
 
 The active v3.1 campaign is a new version and must not overwrite the validated
@@ -921,7 +921,7 @@ retrieval. It produces 10,000 explicitly unreviewed research records; it does
 not create human gold labels or reviewer decisions.
 
 ```bash
-screen -dmS campaign10kv3 zsh scripts/run_campaign_10000_v3.sh
+.venv/bin/python scripts/run_campaign.py all
 ```
 
 Progress is recorded in `logs/campaign_30000_v3_unreviewed.log` and
@@ -1065,14 +1065,13 @@ BanglaRAG-Eval/
 │   ├── record.schema.json
 │   └── evaluation_protocol.md
 ├── experiments/        # experiment definitions (Milestone 2+)
-├── scripts/            # fixture builder, annotation, pipeline, evaluator runners
+├── scripts/            # maintained workflow entry points
 │   ├── build_synthetic_fixture.py
 │   ├── run_annotation_server.py
 │   ├── run_pipeline.py                 # Milestone 2 pipeline runner
-│   ├── run_campaign.py                 # Resumable 10,000-record campaign
+│   ├── run_campaign.py                 # Resumable campaign
 │   ├── run_evaluators.py               # Run evaluators + compute metrics
 │   ├── setup_annotation.py             # Create annotation working copy
-│   └── migrate_schema.py               # Schema migration (nested -> flat)
 ├── src/                # banglarag_eval package
 │   └── banglarag_eval/
 │       ├── annotation/ # Flask web UI for human annotation + adjudication

@@ -46,7 +46,7 @@ The resumable command runs contradiction proposals, review-packet
 construction, generation, and finalization:
 
 ```bash
-zsh scripts/run_campaign_10000_v3.sh
+.venv/bin/python scripts/run_campaign.py all
 ```
 
 It requires Ollama to be running with the configured models. The campaign
