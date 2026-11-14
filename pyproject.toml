@@ -11,6 +11,7 @@ dependencies = [
     "PyYAML",
     "bangla-nlpkit>=0.1.1,<1",
     "jsonschema>=4.18",
+    "python-dotenv>=1.0,<2",
 ]
 
 [project.optional-dependencies]
@@ -33,7 +34,7 @@ campaign = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
-# The package reads configs/schema/record.schema.json and
+# The package reads configs/record.schema.json and
 # configs/conditions.yaml at runtime via constants.REPO_ROOT, which
 # resolves only inside a repository checkout (editable install or the
 # tests/conftest.py path setup). Milestone 1 therefore supports editable

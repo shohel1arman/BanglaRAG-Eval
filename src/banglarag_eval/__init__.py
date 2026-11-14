@@ -9,3 +9,7 @@ evaluators are systems under evaluation, never ground truth.
 """
 
 __version__ = "0.1.0"
+
+from .env import load_environment
+
+load_environment()

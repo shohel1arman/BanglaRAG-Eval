@@ -17,6 +17,7 @@ Usage:
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -33,7 +34,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--output",
-        default="data/pilot_stage1_real.jsonl",
+        default=os.environ.get("BANGLARAG_PILOT_OUTPUT", "data/pilot_stage1_real.jsonl"),
         help="Output JSONL path (default: data/pilot_stage1_real.jsonl)",
     )
     parser.add_argument(
@@ -56,7 +57,7 @@ def main() -> None:
     parser.add_argument(
         "--seed",
         type=int,
-        default=42,
+        default=int(os.environ.get("BANGLARAG_RANDOM_SEED", "42")),
         help="Random seed (default: 42)",
     )
     parser.add_argument(
@@ -67,7 +68,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--embedding-model",
-        default="bge-m3",
+        default=os.environ.get("OLLAMA_EMBEDDING_MODEL", "bge-m3"),
         help="Ollama embedding model for dense/hybrid retrieval (default: bge-m3)",
     )
     parser.add_argument(

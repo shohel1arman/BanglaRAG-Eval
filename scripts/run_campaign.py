@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -22,6 +23,7 @@ from banglarag_eval.pipeline.campaign import (
     repair_prepared_question_variants,
 )
 from banglarag_eval.pipeline.generator import check_ollama_available
+from banglarag_eval.env import env_list
 
 
 def main() -> None:
@@ -39,25 +41,35 @@ def main() -> None:
         ),
         help="Campaign phase; prepare/generate are append-only and resumable.",
     )
-    parser.add_argument("--config", default="configs/campaign_10000_v3_unreviewed.yaml")
-    parser.add_argument("--source", default="data/raw/BanglaQuADv1.0-train.json")
+    parser.add_argument("--config", default=os.environ.get("BANGLARAG_CAMPAIGN_CONFIG", "configs/campaign_10000_v3_unreviewed.yaml"))
+    parser.add_argument("--source", default=os.environ.get("BANGLARAG_SOURCE_FILE", "data/raw/BanglaQuADv1.0-train.json"))
     parser.add_argument(
-        "--questions", default="data/intermediate/campaign_10000_questions_final_v2.jsonl"
+        "--questions", default=os.environ.get("BANGLARAG_QUESTIONS_FILE", "data/intermediate/campaign_10000_questions_final_v2.jsonl")
     )
     parser.add_argument(
         "--reuse-translations",
         help="Reuse validated translation pairs from an earlier audited checkpoint.",
     )
-    parser.add_argument("--working", default="checkpoints/campaign_30000_v3_working.jsonl")
-    parser.add_argument("--review-packet")
+    parser.add_argument(
+        "--working",
+        default=os.environ.get(
+            "BANGLARAG_WORKING_FILE", "checkpoints/campaign_30000_v3_working.jsonl"
+        ),
+    )
+    parser.add_argument("--review-packet", default=os.environ.get("BANGLARAG_REVIEW_PACKET"))
     parser.add_argument("--overwrite-review-packet", action="store_true")
-    parser.add_argument("--output", default="data/campaign_30000_v3_unreviewed.jsonl")
+    parser.add_argument(
+        "--output",
+        default=os.environ.get(
+            "BANGLARAG_OUTPUT_FILE", "data/campaign_30000_v3_unreviewed.jsonl"
+        ),
+    )
     parser.add_argument(
         "--categories", default="data/campaign_30000_v3_unreviewed_categories.jsonl"
     )
     parser.add_argument("--manifest", default="data/campaign_30000_v3_manifest.json")
-    parser.add_argument("--transform-model", default="qwen3:8b")
-    parser.add_argument("--fallback-transform-model", default="gemma3:4b")
+    parser.add_argument("--transform-model", default=os.environ.get("BANGLARAG_TRANSFORM_MODEL", "qwen3:8b"))
+    parser.add_argument("--fallback-transform-model", default=os.environ.get("BANGLARAG_FALLBACK_TRANSFORM_MODEL", "gemma3:4b"))
     parser.add_argument(
         "--translation-backend", choices=("banglat5", "ollama"), default="banglat5"
     )
@@ -71,7 +83,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    config = load_campaign_config(args.config)
+    config = load_campaign_config(args.config, use_environment=True)
     needs_ollama = args.phase in {"propose-contradictions", "generate", "all"} or (
         args.phase == "prepare" and args.translation_backend == "ollama"
     )
