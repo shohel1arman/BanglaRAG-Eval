@@ -48,14 +48,14 @@ def main() -> None:
         "--reuse-translations",
         help="Reuse validated translation pairs from an earlier audited checkpoint.",
     )
-    parser.add_argument("--working", default="checkpoints/campaign_10000_working.jsonl")
+    parser.add_argument("--working", default="checkpoints/campaign_30000_v3_working.jsonl")
     parser.add_argument("--review-packet")
     parser.add_argument("--overwrite-review-packet", action="store_true")
-    parser.add_argument("--output", default="data/campaign_10000_final.jsonl")
+    parser.add_argument("--output", default="data/campaign_30000_v3_unreviewed.jsonl")
     parser.add_argument(
-        "--categories", default="data/campaign_10000_v3_unreviewed_categories.jsonl"
+        "--categories", default="data/campaign_30000_v3_unreviewed_categories.jsonl"
     )
-    parser.add_argument("--manifest", default="data/campaign_10000_manifest.json")
+    parser.add_argument("--manifest", default="data/campaign_30000_v3_manifest.json")
     parser.add_argument("--transform-model", default="qwen3:8b")
     parser.add_argument("--fallback-transform-model", default="gemma3:4b")
     parser.add_argument(
