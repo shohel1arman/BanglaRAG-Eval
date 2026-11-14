@@ -38,6 +38,11 @@ def main() -> None:
         help="Output JSONL path (default: data/pilot_stage1_real.jsonl)",
     )
     parser.add_argument(
+        "--model",
+        default=os.environ.get("OLLAMA_MODEL", "qwen3:8b"),
+        help="One Ollama model tag for answer generation (default: OLLAMA_MODEL or qwen3:8b)",
+    )
+    parser.add_argument(
         "--no-ollama",
         action="store_true",
         help="Skip Ollama generation, use intended answers as placeholders",
@@ -89,7 +94,7 @@ def main() -> None:
 
     if use_ollama:
         if check_ollama_available():
-            print("[OK] Ollama is running. Generation will use Qwen3:8b.")
+            print(f"[OK] Ollama is running. Generation will use {args.model}.")
         else:
             print("[WARN] Ollama is not running. Falling back to placeholder answers.")
             print("       Start Ollama with: ollama serve")
@@ -110,6 +115,7 @@ def main() -> None:
         embedding_model=args.embedding_model,
         embedding_base_url=args.embedding_base_url,
         retrieval_top_k=args.top_k,
+        generation_model=args.model,
     )
 
     print("=" * 60)

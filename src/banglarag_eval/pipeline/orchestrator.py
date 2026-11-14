@@ -40,6 +40,7 @@ def build_pilot_records(
     embedding_model: str = "bge-m3",
     embedding_base_url: str | None = None,
     retrieval_top_k: int = 3,
+    generation_model: str | None = None,
 ) -> list[dict[str, Any]]:
     """Build pilot records through the full pipeline.
 
@@ -57,6 +58,8 @@ def build_pilot_records(
         embedding_model: Ollama embedding model for dense and hybrid retrieval.
         embedding_base_url: Optional Ollama API base URL for embeddings.
         retrieval_top_k: Number of passages supplied to evidence construction.
+        generation_model: Ollama model tag for answer generation. When omitted,
+            the generator reads ``OLLAMA_MODEL`` from the environment.
 
     Returns:
         List of records in canonical schema format.
@@ -138,17 +141,18 @@ def build_pilot_records(
                     gen_result = generate_answer(
                         question=q_spec.question,
                         context=evidence.retrieved_context,
+                        model=generation_model,
                         temperature=0.0,
                         timeout=300,
                     )
                     generated_answer = gen_result.answer
-                    generation_model = gen_result.model
+                    generated_model = gen_result.model
                     generation_latency = gen_result.latency_seconds
                     generation_tokens = gen_result.eval_count
                 except (ConnectionError, RuntimeError, TimeoutError) as exc:
                     print(f"  [WARN] Record {record_index}: generation failed ({type(exc).__name__}), using fallback")
                     generated_answer = q_spec.intended_answer
-                    generation_model = f"ollama_fallback_{type(exc).__name__.lower()}"
+                    generated_model = f"ollama_fallback_{type(exc).__name__.lower()}"
                     generation_latency = 0.0
                     generation_tokens = 0
             elif ollama_available and not evidence.retrieved_context:
@@ -157,23 +161,24 @@ def build_pilot_records(
                     gen_result = generate_answer(
                         question=q_spec.question,
                         context="(no context provided)",
+                        model=generation_model,
                         temperature=0.0,
                         timeout=300,
                     )
                     generated_answer = gen_result.answer
-                    generation_model = gen_result.model
+                    generated_model = gen_result.model
                     generation_latency = gen_result.latency_seconds
                     generation_tokens = gen_result.eval_count
                 except (ConnectionError, RuntimeError, TimeoutError) as exc:
                     print(f"  [WARN] Record {record_index}: generation failed ({type(exc).__name__}), using fallback")
                     generated_answer = q_spec.intended_answer
-                    generation_model = f"ollama_fallback_{type(exc).__name__.lower()}"
+                    generated_model = f"ollama_fallback_{type(exc).__name__.lower()}"
                     generation_latency = 0.0
                     generation_tokens = 0
             else:
                 # Offline mode — use intended answer as placeholder
                 generated_answer = q_spec.intended_answer
-                generation_model = "placeholder_offline"
+                generated_model = "placeholder_offline"
                 generation_latency = 0.0
                 generation_tokens = 0
 
@@ -203,7 +208,7 @@ def build_pilot_records(
                 "reranker": retriever.reranker,
                 "generated_answer": generated_answer,
                 "answer_claims": [],
-                "generator_model": generation_model,
+                "generator_model": generated_model,
                 "generation_settings": {
                     "temperature": 0.0,
                     "seed": 42,
@@ -265,6 +270,7 @@ def run_pipeline(
     embedding_model: str = "bge-m3",
     embedding_base_url: str | None = None,
     retrieval_top_k: int = 3,
+    generation_model: str | None = None,
 ) -> dict[str, Any]:
     """Run the full pilot pipeline and save results.
 
@@ -293,6 +299,7 @@ def run_pipeline(
         embedding_model=embedding_model,
         embedding_base_url=embedding_base_url,
         retrieval_top_k=retrieval_top_k,
+        generation_model=generation_model,
     )
 
     save_pilot_dataset(records, output_path)
