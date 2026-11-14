@@ -91,6 +91,18 @@ After generation, create a separate annotation copy:
   --mode both
 ```
 
+The pilot runner uses one model per run. Change only `OLLAMA_MODEL` in `.env`,
+or pass `--model` directly:
+
+```bash
+.venv/bin/python scripts/run_pipeline.py --model qwen3:32b \
+  --output data/pilot_qwen3_32b.jsonl
+```
+
+`BANGLARAG_TRANSFORM_MODEL` is only for campaign question transformation and
+`BANGLARAG_JUDGE_MODEL` is only for automatic evaluator judges. They are not
+needed for the simple pilot command unless those separate stages are run.
+
 Create the human-annotation working copy and start the local UI:
 
 ```bash
