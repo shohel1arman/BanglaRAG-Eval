@@ -13,13 +13,13 @@ from banglarag_eval.pipeline.campaign import finalize_campaign
 
 
 CONFIG = Path("configs/campaign_10000_v3_unreviewed.yaml")
-WORKING = Path("checkpoints/campaign_10000_v3_unreviewed_working.jsonl")
-FINAL = Path("data/campaign_10000_v3_unreviewed.jsonl")
-CATEGORIES = Path("data/campaign_10000_v3_unreviewed_categories.jsonl")
-MANIFEST = Path("data/campaign_10000_v3_unreviewed_manifest.json")
-REVIEW_PACKET = Path("data/intermediate/campaign_10000_v3_review.jsonl")
-CONTRADICTIONS = Path("data/intermediate/campaign_10000_v3_contradictions.jsonl")
-AUDIT = Path("data/campaign_10000_v3_unreviewed_audit.json")
+WORKING = Path("checkpoints/campaign_30000_v3_unreviewed_working.jsonl")
+FINAL = Path("data/campaign_30000_v3_unreviewed.jsonl")
+CATEGORIES = Path("data/campaign_30000_v3_unreviewed_categories.jsonl")
+MANIFEST = Path("data/campaign_30000_v3_unreviewed_manifest.json")
+REVIEW_PACKET = Path("data/intermediate/campaign_30000_v3_review.jsonl")
+CONTRADICTIONS = Path("data/intermediate/campaign_30000_v3_contradictions.jsonl")
+AUDIT = Path("data/campaign_30000_v3_unreviewed_audit.json")
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -38,11 +38,11 @@ def main() -> None:
 
     ids = [row["example_id"] for row in records]
     digest = hashlib.sha256(FINAL.read_bytes()).hexdigest()
-    assert len(records) == 10_000
-    assert len(set(ids)) == 10_000
-    assert manifest["record_count"] == 10_000
-    assert manifest["unique_example_ids"] == 10_000
-    assert manifest["schema_valid_records"] == 10_000
+    assert len(records) == 30_000
+    assert len(set(ids)) == 30_000
+    assert manifest["record_count"] == 30_000
+    assert manifest["unique_example_ids"] == 30_000
+    assert manifest["schema_valid_records"] == 30_000
     assert manifest["human_annotations_present"] == 0
     assert manifest["sha256"] == digest
     assert all(row.get("construction_review_status") == "unreviewed" for row in records)

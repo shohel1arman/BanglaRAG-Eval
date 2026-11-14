@@ -1,11 +1,11 @@
 # Owner-authorized generation of pre-annotation outputs. This artifact is
 # explicitly UNREVIEWED and cannot be represented as human-reviewed gold data.
-dataset_version: campaign-10000-methodology-3.0.0-unreviewed
+dataset_version: campaign-30000-methodology-3.1.0-unreviewed
 example_id_prefix: c10kv3u
 campaign_status: owner_authorized_unreviewed_generation
 experimental_design: blocked_language
 fixed_retrieval_per_question: true
-target_records: 10000
+target_records: 30000
 base_examples: 1000
 random_seed: 20261013
 
@@ -41,6 +41,10 @@ evidence_conditions:
 generator_models:
   - qwen3:8b
   - gemma3:4b
+  - qwen3:32b
+  - llama3.3:70b
+  - gemma3:27b
+  - deepseek-r1:32b
 
 model_artifacts:
   qwen3:8b:
@@ -55,6 +59,30 @@ model_artifacts:
     parameters: 3.9B
     quantization: Q4_K_M
     license: Gemma-Terms-of-Use
+  qwen3:32b:
+    provider: ollama
+    parameters: 32.8B
+    quantization: Ollama-managed
+    license: Apache-2.0
+    source: https://ollama.com/library/qwen3
+  llama3.3:70b:
+    provider: ollama
+    parameters: 70B
+    quantization: Ollama-managed
+    license: Llama-3.3-Community-License
+    source: https://ollama.com/library/llama3.3
+  gemma3:27b:
+    provider: ollama
+    parameters: 27B
+    quantization: Ollama-managed
+    license: Gemma-Terms-of-Use
+    source: https://ollama.com/library/gemma3
+  deepseek-r1:32b:
+    provider: ollama
+    parameters: 32B
+    quantization: Ollama-managed
+    license: MIT
+    source: https://ollama.com/library/deepseek-r1
 
 retrieval_methods:
   - bm25
