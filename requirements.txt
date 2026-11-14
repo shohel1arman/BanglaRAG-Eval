@@ -21,6 +21,7 @@ scipy
 
 # Loading pilot and condition configuration files (configs/*.yaml).
 pyyaml
+python-dotenv>=1.0,<2
 
 # Progress reporting for long-running generation/evaluation loops.
 tqdm

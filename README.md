@@ -15,16 +15,28 @@ The project focuses on evaluator reliability, not only model performance. Human 
 
 ## Start here
 
-The repository has one active campaign dataset. The 209 MB JSONL is
-downloaded separately because GitHub rejects files larger than 100 MB:
+The repository has a validated 10,000-record baseline dataset. The 209 MB
+JSONL files are downloaded separately because GitHub rejects files larger than
+100 MB. The repository is private, so you must be authenticated with GitHub
+and have access to `shohel1arman/BanglaRAG-Eval`.
 
 ```bash
 cd "/Users/dipro/Bangla Rag/BanglaRAG-Eval"
+cp .env.example .env
 gh release download dataset-v3 \
-  --repo DIP-RO/BanglaRAG-Eval \
+  --repo shohel1arman/BanglaRAG-Eval \
   --pattern campaign_10000_v3_unreviewed.jsonl \
   --dir data
 ```
+
+Dataset view links:
+
+- [Campaign dataset](https://github.com/shohel1arman/BanglaRAG-Eval/releases/download/dataset-v3/campaign_10000_v3_unreviewed.jsonl)
+- [Human annotation dataset](https://github.com/shohel1arman/BanglaRAG-Eval/releases/download/dataset-v3/human_annotation_v1.jsonl)
+- [Dataset release page](https://github.com/shohel1arman/BanglaRAG-Eval/releases/tag/dataset-v3)
+
+The download links return 404 when opened without authorization because the
+repository is private. Use `gh auth login` first.
 
 Install the project and run all tests:
 
@@ -37,6 +49,46 @@ Run the complete active campaign:
 
 ```bash
 zsh scripts/run_campaign_10000_v3.sh
+```
+
+The active v3.1 campaign is a new version and must not overwrite the validated
+10,000-record baseline. It generates 30,000 records from six local Ollama
+generators:
+
+| Ollama tag | Family | Parameters | Role |
+|---|---|---:|---|
+| `qwen3:8b` | Qwen | 8B | Existing baseline |
+| `gemma3:4b` | Gemma | 4B | Existing baseline |
+| `qwen3:32b` | Qwen | 32.8B | Added model |
+| `llama3.3:70b` | Llama | 70B | Added model |
+| `gemma3:27b` | Gemma | 27B | Added model |
+| `deepseek-r1:32b` | DeepSeek distilled Qwen | 32B | Added model |
+
+Groq is not included in this local-only run: it is an inference provider, not
+an Ollama model. The selected model tags are available from the official
+Ollama catalogs:
+
+```bash
+ollama pull qwen3:8b
+ollama pull gemma3:4b
+ollama pull qwen3:32b
+ollama pull llama3.3:70b
+ollama pull gemma3:27b
+ollama pull deepseek-r1:32b
+```
+
+The new output is written to
+`data/campaign_30000_v3_unreviewed.jsonl`; it is a separate dataset version.
+After generation, create a separate annotation copy:
+
+```bash
+.venv/bin/python scripts/setup_annotation.py \
+  --source data/campaign_30000_v3_unreviewed.jsonl \
+  --target data/human_annotation_v2.jsonl
+
+.venv/bin/python scripts/run_annotation_server.py \
+  --dataset data/human_annotation_v2.jsonl \
+  --mode both
 ```
 
 Create the human-annotation working copy and start the local UI:
@@ -860,8 +912,8 @@ not create human gold labels or reviewer decisions.
 screen -dmS campaign10kv3 zsh scripts/run_campaign_10000_v3.sh
 ```
 
-Progress is recorded in `logs/campaign_10000_v3_unreviewed.log` and
-`checkpoints/campaign_10000_v3_unreviewed_working.jsonl`. The launcher resumes
+Progress is recorded in `logs/campaign_30000_v3_unreviewed.log` and
+`checkpoints/campaign_30000_v3_unreviewed_working.jsonl`. The launcher resumes
 by stable example ID and finalizes only after all expected rows validate. See
 [campaign_10000.md](docs/campaign_10000.md) for the review and provenance rules.
 
