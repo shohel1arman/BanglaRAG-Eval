@@ -41,9 +41,27 @@ repository is private. Use `gh auth login` first.
 Install the project and run all tests:
 
 ```bash
-.venv/bin/pip install -e ".[dev,annotation,analysis,campaign]"
+# Validated interpreter: Python 3.14.8
+python3.14 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install -r requirements-lock-py314.txt
+.venv/bin/python -m pip install -e .
 PYTHONPATH=src .venv/bin/python -m pytest -q
 ```
+
+For the exact validated environment, use
+[requirements-lock-py314.txt](requirements-lock-py314.txt). It was captured
+from Python 3.14.8 on macOS and pins the complete dependency graph. The
+project metadata still supports Python 3.10 and newer; other Python versions
+or operating systems should install from the editable project extras instead
+and may resolve platform-specific packages differently:
+
+```bash
+.venv/bin/python -m pip install -e ".[dev,annotation,analysis,campaign]"
+```
+
+The `.python-version` file records the exact interpreter used for the lock.
+With `pyenv`, run `pyenv install 3.14.8` and `pyenv local 3.14.8`.
 
 Run the single-model pilot (recommended first run):
 
