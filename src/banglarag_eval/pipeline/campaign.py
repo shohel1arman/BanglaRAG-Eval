@@ -20,6 +20,7 @@ from bangla_nlpkit import romanize
 
 from banglarag_eval.schema import validate_record
 from banglarag_eval.env import env_list
+from banglarag_eval.model_metadata import model_metadata
 
 from .generator import GenerationResult, generate
 from .retriever import RetrievedDocument, RetrievalResult, build_retriever
@@ -136,11 +137,18 @@ def _now() -> str:
 
 
 def load_campaign_config(
-    path: str | Path, *, use_environment: bool = False
+    path: str | Path,
+    *,
+    use_environment: bool = False,
+    generator_models: list[str] | None = None,
 ) -> dict[str, Any]:
     with open(path, encoding="utf-8") as handle:
         config = yaml.safe_load(handle)
-    configured_models = env_list("BANGLARAG_GENERATOR_MODELS") if use_environment else ()
+    configured_models = (
+        generator_models
+        if generator_models is not None
+        else env_list("BANGLARAG_GENERATOR_MODELS") if use_environment else ()
+    )
     if configured_models:
         config["generator_models"] = list(configured_models)
         config["target_records"] = (
@@ -1639,9 +1647,10 @@ def generate_campaign(
     config_path: str | Path,
     *,
     generation_function: Callable[..., GenerationResult] = generate,
+    generator_models: list[str] | None = None,
 ) -> dict[str, Any]:
     """Generate paired model outputs, resuming safely by example_id."""
-    config = load_campaign_config(config_path)
+    config = load_campaign_config(config_path, generator_models=generator_models)
     if str(config.get("campaign_status", "")).startswith("paused"):
         raise ValueError(
             "campaign is paused for methodology repair and cannot be resumed"
@@ -1761,7 +1770,7 @@ def generate_campaign(
             start = row["answer_start"]
             question_language, data_origin = LANGUAGE_METADATA[language]
             record = {
-                "schema_version": "1.1.0",
+                "schema_version": "1.2.0",
                 "example_id": example_id,
                 "document_id": row["document_id"],
                 "split_group_id": _split_group_id(row),
@@ -1797,6 +1806,10 @@ def generate_campaign(
                 ),
                 "generator_model": result.model,
                 "generator_version": result.model,
+                "generator_model_details": model_metadata(
+                    result.model,
+                    config.get("model_artifacts", {}).get(result.model),
+                ),
                 "generation_settings": {
                     "temperature": result.temperature,
                     "seed": 42,
@@ -1966,9 +1979,11 @@ def finalize_campaign(
     categories_path: str | Path,
     manifest_path: str | Path,
     config_path: str | Path,
+    *,
+    generator_models: list[str] | None = None,
 ) -> dict[str, Any]:
     """Validate, sort, and publish one canonical JSONL plus category index."""
-    config = load_campaign_config(config_path)
+    config = load_campaign_config(config_path, generator_models=generator_models)
     records = _read_jsonl(Path(working_path))
     ids = [record["example_id"] for record in records]
     if len(ids) != len(set(ids)):

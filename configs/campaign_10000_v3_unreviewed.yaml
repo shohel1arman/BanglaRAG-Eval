@@ -1,11 +1,11 @@
 # Owner-authorized generation of pre-annotation outputs. This artifact is
 # explicitly UNREVIEWED and cannot be represented as human-reviewed gold data.
-dataset_version: campaign-30000-methodology-3.1.0-unreviewed
-example_id_prefix: c10kv3u
+dataset_version: campaign-50000-methodology-3.3.0-unreviewed
+example_id_prefix: c50kv3u
 campaign_status: owner_authorized_unreviewed_generation
 experimental_design: blocked_language
 fixed_retrieval_per_question: true
-target_records: 30000
+target_records: 50000
 base_examples: 1000
 random_seed: 20261013
 
@@ -39,14 +39,24 @@ evidence_conditions:
   - missing
 
 generator_models:
+  - qwen3:4b
   - qwen3:8b
   - gemma3:4b
+  - llama3.2:3b
+  - phi3.5:3.8b
   - qwen3:32b
   - llama3.3:70b
   - gemma3:27b
   - deepseek-r1:32b
+  - kimi-k2.6:cloud
 
 model_artifacts:
+  qwen3:4b:
+    provider: ollama
+    parameters: 4.0B
+    quantization: Ollama-managed
+    license: Apache-2.0
+    source: https://ollama.com/library/qwen3
   qwen3:8b:
     ollama_id: 500a1f067a9f
     weights_sha256: a3de86cd1c132c822487ededd47a324c50491393e6565cd14bafa40d0b8e686f
@@ -59,6 +69,18 @@ model_artifacts:
     parameters: 3.9B
     quantization: Q4_K_M
     license: Gemma-Terms-of-Use
+  llama3.2:3b:
+    provider: ollama
+    parameters: 3.0B
+    quantization: Ollama-managed
+    license: Llama-3.2-Community-License
+    source: https://ollama.com/library/llama3.2
+  phi3.5:3.8b:
+    provider: ollama
+    parameters: 3.8B
+    quantization: Ollama-managed
+    license: MIT
+    source: https://ollama.com/library/phi3.5
   qwen3:32b:
     provider: ollama
     parameters: 32.8B
@@ -83,6 +105,12 @@ model_artifacts:
     quantization: Ollama-managed
     license: MIT
     source: https://ollama.com/library/deepseek-r1
+  kimi-k2.6:cloud:
+    provider: ollama_cloud
+    parameters: 1040B
+    quantization: Ollama Cloud managed
+    license: null
+    source: https://ollama.com/library/kimi-k2.6
 
 retrieval_methods:
   - bm25

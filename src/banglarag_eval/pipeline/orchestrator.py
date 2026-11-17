@@ -19,6 +19,7 @@ from .questions import generate_questions, QuestionSpec, CURATED_BANGLA_DOCUMENT
 from .retriever import build_retriever
 from .evidence import build_evidence, EvidenceResult
 from .generator import generate as generate_answer, GenerationResult, check_ollama_available
+from ..model_metadata import model_metadata
 
 
 def _iso_timestamp() -> str:
@@ -187,7 +188,7 @@ def build_pilot_records(
 
             record = {
                 # Required schema fields (flat structure per record.schema.json)
-                "schema_version": "1.0.0",
+                "schema_version": "1.2.0",
                 "example_id": record_id,
                 "document_id": source_doc.document_id,
                 "source_id": source_doc.document_id,
@@ -209,6 +210,7 @@ def build_pilot_records(
                 "generated_answer": generated_answer,
                 "answer_claims": [],
                 "generator_model": generated_model,
+                "generator_model_details": model_metadata(generated_model),
                 "generation_settings": {
                     "temperature": 0.0,
                     "seed": 42,
