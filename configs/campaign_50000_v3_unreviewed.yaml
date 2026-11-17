@@ -45,10 +45,10 @@ generator_models:
   - llama3.2:3b
   - phi3.5:3.8b
   - qwen3:32b
-  - qwen3:30b
+  - granite4:32b-a9b-h
   - gemma3:27b
   - deepseek-r1:32b
-  - qwen2.5:32b
+  - olmo-3.1:32b
 
 model_artifacts:
   qwen3:4b:
@@ -87,12 +87,12 @@ model_artifacts:
     quantization: Ollama-managed
     license: Apache-2.0
     source: https://ollama.com/library/qwen3
-  qwen3:30b:
+  granite4:32b-a9b-h:
     provider: ollama
-    parameters: 30.5B
+    parameters: 32.2B
     quantization: Q4_K_M
     license: Apache-2.0
-    source: https://ollama.com/library/qwen3:30b
+    source: https://ollama.com/library/granite4:32b-a9b-h
   gemma3:27b:
     provider: ollama
     parameters: 27B
@@ -105,12 +105,12 @@ model_artifacts:
     quantization: Ollama-managed
     license: MIT
     source: https://ollama.com/library/deepseek-r1
-  qwen2.5:32b:
+  olmo-3.1:32b:
     provider: ollama
-    parameters: 32.8B
+    parameters: 32.2B
     quantization: Q4_K_M
     license: Apache-2.0
-    source: https://ollama.com/library/qwen2.5:32b
+    source: https://ollama.com/library/olmo-3.1:32b
 
 retrieval_methods:
   - bm25

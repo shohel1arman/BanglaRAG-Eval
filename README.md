@@ -93,10 +93,10 @@ generators:
 | `llama3.2:3b` | Llama 3.2 | 3B | Added small model |
 | `phi3.5:3.8b` | Phi-3.5 Mini | 3.8B | Added small model |
 | `qwen3:32b` | Qwen | 32.8B | Added model |
-| `qwen3:30b` | Qwen3 | 30.5B | Added model |
+| `granite4:32b-a9b-h` | IBM Granite 4 | 32.2B | Added model |
 | `gemma3:27b` | Gemma | 27B | Added model |
 | `deepseek-r1:32b` | DeepSeek distilled Qwen | 32B | Added model |
-| `qwen2.5:32b` | Qwen2.5 | 32.8B | Added model |
+| `olmo-3.1:32b` | OLMo 3.1 | 32.2B | Added model |
 
 Groq is not included in this local-only run: it is an inference provider, not
 an Ollama model. The selected model tags are available from the official
@@ -109,10 +109,10 @@ ollama pull gemma3:4b
 ollama pull llama3.2:3b
 ollama pull phi3.5:3.8b
 ollama pull qwen3:32b
-ollama pull qwen3:30b
+ollama pull granite4:32b-a9b-h
 ollama pull gemma3:27b
 ollama pull deepseek-r1:32b
-ollama pull qwen2.5:32b
+ollama pull olmo-3.1:32b
 ```
 
 All ten configured models are local Ollama models. To run only a subset, pass

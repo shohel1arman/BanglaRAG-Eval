@@ -54,21 +54,21 @@ MODEL_METADATA: dict[str, dict[str, Any]] = {
         "license": "Apache-2.0",
         "source": "https://ollama.com/library/qwen3",
     },
-    "qwen3:30b": {
+    "granite4:32b-a9b-h": {
         "provider": "ollama",
-        "family": "Qwen3",
-        "parameter_count_billion": 30.5,
+        "family": "IBM Granite 4",
+        "parameter_count_billion": 32.2,
         "quantization": "Q4_K_M",
         "license": "Apache-2.0",
-        "source": "https://ollama.com/library/qwen3:30b",
+        "source": "https://ollama.com/library/granite4:32b-a9b-h",
     },
-    "qwen2.5:32b": {
+    "olmo-3.1:32b": {
         "provider": "ollama",
-        "family": "Qwen2.5",
-        "parameter_count_billion": 32.8,
+        "family": "OLMo 3.1",
+        "parameter_count_billion": 32.2,
         "quantization": "Q4_K_M",
         "license": "Apache-2.0",
-        "source": "https://ollama.com/library/qwen2.5:32b",
+        "source": "https://ollama.com/library/olmo-3.1:32b",
     },
     "gemma3:27b": {
         "provider": "ollama",

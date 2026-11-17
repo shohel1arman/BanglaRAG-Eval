@@ -14,11 +14,11 @@ def test_small_model_metadata_is_structured() -> None:
 
 
 def test_32b_class_model_metadata_is_structured() -> None:
-    details = model_metadata("qwen3:30b")
+    details = model_metadata("granite4:32b-a9b-h")
 
     assert details["provider"] == "ollama"
-    assert details["ollama_tag"] == "qwen3:30b"
-    assert details["parameter_count_billion"] == 30.5
+    assert details["ollama_tag"] == "granite4:32b-a9b-h"
+    assert details["parameter_count_billion"] == 32.2
 
 
 def test_campaign_model_selection_recalculates_target() -> None:
