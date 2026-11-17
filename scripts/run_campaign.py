@@ -48,7 +48,7 @@ def main() -> None:
         nargs="+",
         help="Run one model or a selected model set; omit to run all configured models.",
     )
-    parser.add_argument("--config", default=os.environ.get("BANGLARAG_CAMPAIGN_CONFIG", "configs/campaign_10000_v3_unreviewed.yaml"))
+    parser.add_argument("--config", default=os.environ.get("BANGLARAG_CAMPAIGN_CONFIG", "configs/campaign_50000_v3_unreviewed.yaml"))
     parser.add_argument("--source", default=os.environ.get("BANGLARAG_SOURCE_FILE", "data/raw/BanglaQuADv1.0-train.json"))
     parser.add_argument(
         "--questions", default=os.environ.get("BANGLARAG_QUESTIONS_FILE", "data/intermediate/campaign_10000_questions_final_v2.jsonl")
@@ -86,7 +86,7 @@ def main() -> None:
     parser.add_argument("--repair-output")
     parser.add_argument(
         "--contradiction-proposals",
-        default="data/intermediate/campaign_10000_v3_contradictions.jsonl",
+        default="data/intermediate/campaign_50000_v3_contradictions.jsonl",
     )
     args = parser.parse_args()
 

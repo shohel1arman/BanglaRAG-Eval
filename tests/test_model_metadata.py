@@ -23,7 +23,7 @@ def test_kimi_cloud_metadata_keeps_ollama_tag() -> None:
 
 def test_campaign_model_selection_recalculates_target() -> None:
     config = load_campaign_config(
-        "configs/campaign_10000_v3_unreviewed.yaml",
+        "configs/campaign_50000_v3_unreviewed.yaml",
         generator_models=["qwen3:4b", "llama3.2:3b"],
     )
 

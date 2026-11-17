@@ -133,7 +133,7 @@ contradiction_replacements:
   9bbeef0a-53c6-4f0d-90ac-54622620b045: "বিস্বাদ"
   b369edf1-5088-480f-873a-19518121cd35: "এমএসসি এনভায়রনমেন্টাল প্ল্যানিং"
 
-contradiction_replacements_file: data/intermediate/campaign_10000_v3_contradictions.jsonl
+contradiction_replacements_file: data/intermediate/campaign_50000_v3_contradictions.jsonl
 allow_unreviewed_contradiction_proposals: true
 contradiction_generation:
   models:
@@ -150,7 +150,7 @@ generation:
 
 review_gate:
   required: false
-  file: data/intermediate/campaign_10000_v3_review.jsonl
+  file: data/intermediate/campaign_50000_v3_review.jsonl
   independent_reviewers: 2
   status: pending_after_generation
 

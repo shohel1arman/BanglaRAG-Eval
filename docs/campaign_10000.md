@@ -71,7 +71,7 @@ This protects evidence-condition validity; raw source-hit status remains in
 ## Reproducibility
 
 Earlier campaign configurations were retired. The active configuration is
-`configs/campaign_10000_v3_unreviewed.yaml`. Question preparation
+`configs/campaign_50000_v3_unreviewed.yaml`. Question preparation
 and answer generation write append-only checkpoints and resume by stable IDs.
 Finalization refuses incomplete, duplicate, or schema-invalid data and emits a
 SHA-256 manifest plus a JSONL category index.
@@ -149,18 +149,18 @@ every row.
 
 ## Owner-authorized v3 full generation
 
-`configs/campaign_10000_v3_unreviewed.yaml` applies the corrective construction
+`configs/campaign_50000_v3_unreviewed.yaml` applies the corrective construction
 rules to the full 1,000-QA blocked-language design. The project owner authorized
 generation before construction review, so the resulting 10,000 records are
 explicitly versioned and labeled `unreviewed`. They are model-output research
 artifacts, not gold evaluation data.
 
 Open-ended contradiction candidates are stored separately in
-`data/intermediate/campaign_10000_v3_contradictions.jsonl`. Model-proposed
+`data/intermediate/campaign_50000_v3_contradictions.jsonl`. Model-proposed
 candidates retain model, prompt, settings, timestamp, and `review_status`;
 manually configured candidates retain their own provenance. The pending
 5,000-scenario packet is written to
-`data/intermediate/campaign_10000_v3_review.jsonl` without reviewer decisions.
+`data/intermediate/campaign_50000_v3_review.jsonl` without reviewer decisions.
 
 Run or resume the complete chain with:
 
@@ -168,7 +168,7 @@ Run or resume the complete chain with:
 .venv/bin/python scripts/run_campaign.py all
 ```
 
-The launcher appends to `logs/campaign_10000_v3_unreviewed.log`, resumes by
+The launcher appends to `logs/campaign_50000_v3_unreviewed.log`, resumes by
 stable example ID, and finalizes only after all 10,000 rows exist and validate.
 Human review fields must remain empty until two genuine independent reviewers
 complete the recorded checks and disagreements are adjudicated.

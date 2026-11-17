@@ -1003,7 +1003,7 @@ passage-count-controlled evidence variants, and a mandatory two-reviewer gate.
 
 ```bash
 .venv/bin/python scripts/run_campaign.py review \
-  --config configs/campaign_10000_v3_unreviewed.yaml \
+  --config configs/campaign_50000_v3_unreviewed.yaml \
   --questions data/intermediate/campaign_10000_v2_questions.jsonl \
   --overwrite-review-packet
 ```

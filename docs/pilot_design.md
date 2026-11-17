@@ -11,7 +11,7 @@ findings.
 ## Methodology-repair pilot (v3)
 
 The active repair pilot is configured in
-`configs/campaign_10000_v3_unreviewed.yaml`.
+`configs/campaign_50000_v3_unreviewed.yaml`.
 It replaces the rejected pre-annotation campaign for the next experimental
 run; both older checkpoints remain audit artifacts.
 
@@ -48,7 +48,7 @@ Create the review packet with:
 
 ```bash
 python scripts/run_campaign.py review \
-  --config configs/campaign_10000_v3_unreviewed.yaml \
+  --config configs/campaign_50000_v3_unreviewed.yaml \
   --questions data/intermediate/campaign_10000_v2_questions.jsonl \
   --overwrite-review-packet
 ```
