@@ -1,11 +1,11 @@
 # Owner-authorized generation of pre-annotation outputs. This artifact is
 # explicitly UNREVIEWED and cannot be represented as human-reviewed gold data.
-dataset_version: campaign-45000-methodology-3.2.0-unreviewed
-example_id_prefix: c45kv3u
+dataset_version: campaign-50000-methodology-3.3.0-unreviewed
+example_id_prefix: c50kv3u
 campaign_status: owner_authorized_unreviewed_generation
 experimental_design: blocked_language
 fixed_retrieval_per_question: true
-target_records: 45000
+target_records: 50000
 base_examples: 1000
 random_seed: 20261013
 
@@ -48,6 +48,7 @@ generator_models:
   - llama3.3:70b
   - gemma3:27b
   - deepseek-r1:32b
+  - kimi-k2.6:cloud
 
 model_artifacts:
   qwen3:4b:
@@ -104,6 +105,12 @@ model_artifacts:
     quantization: Ollama-managed
     license: MIT
     source: https://ollama.com/library/deepseek-r1
+  kimi-k2.6:cloud:
+    provider: ollama_cloud
+    parameters: 1040B
+    quantization: Ollama Cloud managed
+    license: null
+    source: https://ollama.com/library/kimi-k2.6
 
 retrieval_methods:
   - bm25

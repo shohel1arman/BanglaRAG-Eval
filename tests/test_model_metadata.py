@@ -13,6 +13,14 @@ def test_small_model_metadata_is_structured() -> None:
     assert details["ollama_tag"] == "qwen3:4b"
 
 
+def test_kimi_cloud_metadata_keeps_ollama_tag() -> None:
+    details = model_metadata("kimi-k2.6:cloud")
+
+    assert details["provider"] == "ollama_cloud"
+    assert details["ollama_tag"] == "kimi-k2.6:cloud"
+    assert details["parameter_count_billion"] == 1040.0
+
+
 def test_campaign_model_selection_recalculates_target() -> None:
     config = load_campaign_config(
         "configs/campaign_10000_v3_unreviewed.yaml",

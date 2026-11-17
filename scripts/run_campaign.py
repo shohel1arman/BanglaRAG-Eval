@@ -60,7 +60,7 @@ def main() -> None:
     parser.add_argument(
         "--working",
         default=os.environ.get(
-            "BANGLARAG_WORKING_FILE", "checkpoints/campaign_45000_v3_working.jsonl"
+            "BANGLARAG_WORKING_FILE", "checkpoints/campaign_50000_v3_working.jsonl"
         ),
     )
     parser.add_argument("--review-packet", default=os.environ.get("BANGLARAG_REVIEW_PACKET"))
@@ -68,13 +68,13 @@ def main() -> None:
     parser.add_argument(
         "--output",
         default=os.environ.get(
-            "BANGLARAG_OUTPUT_FILE", "data/campaign_45000_v3_unreviewed.jsonl"
+            "BANGLARAG_OUTPUT_FILE", "data/campaign_50000_v3_unreviewed.jsonl"
         ),
     )
     parser.add_argument(
-        "--categories", default="data/campaign_45000_v3_unreviewed_categories.jsonl"
+        "--categories", default="data/campaign_50000_v3_unreviewed_categories.jsonl"
     )
-    parser.add_argument("--manifest", default="data/campaign_45000_v3_manifest.json")
+    parser.add_argument("--manifest", default="data/campaign_50000_v3_manifest.json")
     parser.add_argument("--transform-model", default=os.environ.get("BANGLARAG_TRANSFORM_MODEL", "qwen3:8b"))
     parser.add_argument("--fallback-transform-model", default=os.environ.get("BANGLARAG_FALLBACK_TRANSFORM_MODEL", "gemma3:4b"))
     parser.add_argument(

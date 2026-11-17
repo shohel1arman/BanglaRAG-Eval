@@ -37,7 +37,7 @@ Filter a completed dataset by model:
 
 ```bash
 .venv/bin/python scripts/filter_dataset.py \
-  --dataset data/campaign_45000_v3_unreviewed.jsonl \
+  --dataset data/campaign_50000_v3_unreviewed.jsonl \
   --model qwen3:4b \
   --output data/campaign_qwen3_4b.jsonl
 ```

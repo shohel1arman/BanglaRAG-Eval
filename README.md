@@ -82,8 +82,8 @@ Use `--no-ollama` to verify the pipeline locally without starting Ollama:
 ### Run the complete active campaign
 
 The active v3.1 campaign is a new version and must not overwrite the validated
-10,000-record baseline. It generates 45,000 records from nine local Ollama
-generators:
+10,000-record baseline. It generates 50,000 records from nine local Ollama
+generators plus one Ollama Cloud generator:
 
 | Ollama tag | Family | Parameters | Role |
 |---|---|---:|---|
@@ -96,6 +96,7 @@ generators:
 | `llama3.3:70b` | Llama | 70B | Added model |
 | `gemma3:27b` | Gemma | 27B | Added model |
 | `deepseek-r1:32b` | DeepSeek distilled Qwen | 32B | Added model |
+| `kimi-k2.6:cloud` | Kimi K2.6 | 1.04T total | Ollama Cloud |
 
 Groq is not included in this local-only run: it is an inference provider, not
 an Ollama model. The selected model tags are available from the official
@@ -112,6 +113,16 @@ ollama pull llama3.3:70b
 ollama pull gemma3:27b
 ollama pull deepseek-r1:32b
 ```
+
+Kimi K2.6 is an Ollama Cloud model and is not downloaded to the local
+machine. Authenticate Ollama Cloud and verify it separately:
+
+```bash
+ollama run kimi-k2.6:cloud
+```
+
+The full campaign therefore requires Ollama Cloud access when Kimi is included.
+To run only local models, pass an explicit local model set with `--models`.
 
 Before starting the campaign, verify that the configured source and prepared
 question files exist:
@@ -140,7 +151,7 @@ rerun or resumed independently, use:
 ```
 
 To generate only one model, pass `--model`; to generate a selected set, pass
-`--models` followed by multiple tags. Omit these options to run all nine
+`--models` followed by multiple tags. Omit these options to run all ten
 configured models:
 
 ```bash
@@ -160,18 +171,18 @@ To extract one model from a completed multi-model JSONL:
 
 ```bash
 .venv/bin/python scripts/filter_dataset.py \
-  --dataset data/campaign_45000_v3_unreviewed.jsonl \
+  --dataset data/campaign_50000_v3_unreviewed.jsonl \
   --model qwen3:4b \
   --output data/campaign_qwen3_4b.jsonl
 ```
 
 The new output is written to
-`data/campaign_45000_v3_unreviewed.jsonl`; it is a separate dataset version.
+`data/campaign_50000_v3_unreviewed.jsonl`; it is a separate dataset version.
 After generation, create a separate annotation copy:
 
 ```bash
 .venv/bin/python scripts/setup_annotation.py \
-  --source data/campaign_45000_v3_unreviewed.jsonl \
+  --source data/campaign_50000_v3_unreviewed.jsonl \
   --target data/human_annotation_v2.jsonl
 
 .venv/bin/python scripts/run_annotation_server.py \
@@ -1004,13 +1015,13 @@ checkpoint path. See [pilot_design.md](docs/pilot_design.md).
 ### Active campaign protocol notes
 
 The owner-authorized v3 run uses 1,000 QAs, five blocked language conditions,
-five evidence conditions, nine configured Ollama generators, and deduplicated
-BM25 retrieval. It produces 45,000 explicitly unreviewed research records; it
+five evidence conditions, ten configured Ollama generators, and deduplicated
+BM25 retrieval. It produces 50,000 explicitly unreviewed research records; it
 does not create human gold labels or reviewer decisions. Use the canonical
 `run_campaign.py all` command above.
 
-Progress is recorded in `logs/campaign_45000_v3_unreviewed.log` and
-`checkpoints/campaign_45000_v3_working.jsonl`. The launcher resumes
+Progress is recorded in `logs/campaign_50000_v3_unreviewed.log` and
+`checkpoints/campaign_50000_v3_working.jsonl`. The launcher resumes
 by stable example ID and finalizes only after all expected rows validate. See
 [campaign_10000.md](docs/campaign_10000.md) for the review and provenance rules.
 

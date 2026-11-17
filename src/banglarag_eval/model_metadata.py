@@ -78,6 +78,14 @@ MODEL_METADATA: dict[str, dict[str, Any]] = {
         "license": "MIT",
         "source": "https://ollama.com/library/deepseek-r1",
     },
+    "kimi-k2.6:cloud": {
+        "provider": "ollama_cloud",
+        "family": "Kimi K2.6",
+        "parameter_count_billion": 1040.0,
+        "quantization": "Ollama Cloud managed",
+        "license": None,
+        "source": "https://ollama.com/library/kimi-k2.6",
+    },
 }
 
 
@@ -100,5 +108,7 @@ def model_metadata(model: str, configured: dict[str, Any] | None = None) -> dict
     details.setdefault("family", model.split(":", 1)[0])
     details.setdefault("quantization", "unspecified")
     details["model_name"] = model
-    details["ollama_tag"] = model if details["provider"] == "ollama" else None
+    details["ollama_tag"] = (
+        model if details["provider"] in {"ollama", "ollama_cloud"} else None
+    )
     return details
