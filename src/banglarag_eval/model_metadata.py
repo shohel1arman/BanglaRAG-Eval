@@ -54,13 +54,21 @@ MODEL_METADATA: dict[str, dict[str, Any]] = {
         "license": "Apache-2.0",
         "source": "https://ollama.com/library/qwen3",
     },
-    "llama3.3:70b": {
+    "granite4:32b-a9b-h": {
         "provider": "ollama",
-        "family": "Llama 3.3",
-        "parameter_count_billion": 70.0,
-        "quantization": "Ollama-managed",
-        "license": "Llama-3.3-Community-License",
-        "source": "https://ollama.com/library/llama3.3",
+        "family": "IBM Granite 4",
+        "parameter_count_billion": 32.2,
+        "quantization": "Q4_K_M",
+        "license": "Apache-2.0",
+        "source": "https://ollama.com/library/granite4:32b-a9b-h",
+    },
+    "olmo-3.1:32b": {
+        "provider": "ollama",
+        "family": "OLMo 3.1",
+        "parameter_count_billion": 32.2,
+        "quantization": "Q4_K_M",
+        "license": "Apache-2.0",
+        "source": "https://ollama.com/library/olmo-3.1:32b",
     },
     "gemma3:27b": {
         "provider": "ollama",
@@ -77,14 +85,6 @@ MODEL_METADATA: dict[str, dict[str, Any]] = {
         "quantization": "Ollama-managed",
         "license": "MIT",
         "source": "https://ollama.com/library/deepseek-r1",
-    },
-    "kimi-k2.6:cloud": {
-        "provider": "ollama_cloud",
-        "family": "Kimi K2.6",
-        "parameter_count_billion": 1040.0,
-        "quantization": "Ollama Cloud managed",
-        "license": None,
-        "source": "https://ollama.com/library/kimi-k2.6",
     },
 }
 

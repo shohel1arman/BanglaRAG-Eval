@@ -82,8 +82,8 @@ Use `--no-ollama` to verify the pipeline locally without starting Ollama:
 ### Run the complete active campaign
 
 The active v3.1 campaign is a new version and must not overwrite the validated
-10,000-record baseline. It generates 50,000 records from nine local Ollama
-generators plus one Ollama Cloud generator:
+10,000-record baseline. It generates 50,000 records from ten local Ollama
+generators:
 
 | Ollama tag | Family | Parameters | Role |
 |---|---|---:|---|
@@ -93,10 +93,10 @@ generators plus one Ollama Cloud generator:
 | `llama3.2:3b` | Llama 3.2 | 3B | Added small model |
 | `phi3.5:3.8b` | Phi-3.5 Mini | 3.8B | Added small model |
 | `qwen3:32b` | Qwen | 32.8B | Added model |
-| `llama3.3:70b` | Llama | 70B | Added model |
+| `granite4:32b-a9b-h` | IBM Granite 4 | 32.2B | Added model |
 | `gemma3:27b` | Gemma | 27B | Added model |
 | `deepseek-r1:32b` | DeepSeek distilled Qwen | 32B | Added model |
-| `kimi-k2.6:cloud` | Kimi K2.6 | 1.04T total | Ollama Cloud |
+| `olmo-3.1:32b` | OLMo 3.1 | 32.2B | Added model |
 
 Groq is not included in this local-only run: it is an inference provider, not
 an Ollama model. The selected model tags are available from the official
@@ -109,20 +109,14 @@ ollama pull gemma3:4b
 ollama pull llama3.2:3b
 ollama pull phi3.5:3.8b
 ollama pull qwen3:32b
-ollama pull llama3.3:70b
+ollama pull granite4:32b-a9b-h
 ollama pull gemma3:27b
 ollama pull deepseek-r1:32b
+ollama pull olmo-3.1:32b
 ```
 
-Kimi K2.6 is an Ollama Cloud model and is not downloaded to the local
-machine. Authenticate Ollama Cloud and verify it separately:
-
-```bash
-ollama run kimi-k2.6:cloud
-```
-
-The full campaign therefore requires Ollama Cloud access when Kimi is included.
-To run only local models, pass an explicit local model set with `--models`.
+All ten configured models are local Ollama models. To run only a subset, pass
+an explicit local model set with `--models`.
 
 Before starting the campaign, verify that the configured source and prepared
 question files exist:
