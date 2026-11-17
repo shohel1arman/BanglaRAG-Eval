@@ -265,6 +265,22 @@
       "type": ["string", "null"],
       "description": "Exact version/identifier of the generator model."
     },
+    "generator_model_details": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["model_name", "provider", "family", "ollama_tag"],
+      "properties": {
+        "model_name": {"type": "string", "minLength": 1},
+        "ollama_tag": {"type": ["string", "null"]},
+        "provider": {"type": "string", "minLength": 1},
+        "family": {"type": "string", "minLength": 1},
+        "parameter_count_billion": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "quantization": {"type": ["string", "null"]},
+        "license": {"type": ["string", "null"]},
+        "source": {"type": ["string", "null"], "format": "uri"}
+      },
+      "description": "Structured provenance for the model that produced generated_answer."
+    },
     "generation_settings": {
       "type": ["object", "null"],
       "description": "Decoding settings (temperature, max_tokens, etc.) used for generation."

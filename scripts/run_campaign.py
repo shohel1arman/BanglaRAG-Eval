@@ -41,6 +41,13 @@ def main() -> None:
         ),
         help="Campaign phase; prepare/generate are append-only and resumable.",
     )
+    parser.add_argument(
+        "--model",
+        "--models",
+        dest="generator_models",
+        nargs="+",
+        help="Run one model or a selected model set; omit to run all configured models.",
+    )
     parser.add_argument("--config", default=os.environ.get("BANGLARAG_CAMPAIGN_CONFIG", "configs/campaign_10000_v3_unreviewed.yaml"))
     parser.add_argument("--source", default=os.environ.get("BANGLARAG_SOURCE_FILE", "data/raw/BanglaQuADv1.0-train.json"))
     parser.add_argument(
@@ -53,7 +60,7 @@ def main() -> None:
     parser.add_argument(
         "--working",
         default=os.environ.get(
-            "BANGLARAG_WORKING_FILE", "checkpoints/campaign_30000_v3_working.jsonl"
+            "BANGLARAG_WORKING_FILE", "checkpoints/campaign_45000_v3_working.jsonl"
         ),
     )
     parser.add_argument("--review-packet", default=os.environ.get("BANGLARAG_REVIEW_PACKET"))
@@ -61,13 +68,13 @@ def main() -> None:
     parser.add_argument(
         "--output",
         default=os.environ.get(
-            "BANGLARAG_OUTPUT_FILE", "data/campaign_30000_v3_unreviewed.jsonl"
+            "BANGLARAG_OUTPUT_FILE", "data/campaign_45000_v3_unreviewed.jsonl"
         ),
     )
     parser.add_argument(
-        "--categories", default="data/campaign_30000_v3_unreviewed_categories.jsonl"
+        "--categories", default="data/campaign_45000_v3_unreviewed_categories.jsonl"
     )
-    parser.add_argument("--manifest", default="data/campaign_30000_v3_manifest.json")
+    parser.add_argument("--manifest", default="data/campaign_45000_v3_manifest.json")
     parser.add_argument("--transform-model", default=os.environ.get("BANGLARAG_TRANSFORM_MODEL", "qwen3:8b"))
     parser.add_argument("--fallback-transform-model", default=os.environ.get("BANGLARAG_FALLBACK_TRANSFORM_MODEL", "gemma3:4b"))
     parser.add_argument(
@@ -83,7 +90,11 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    config = load_campaign_config(args.config, use_environment=True)
+    config = load_campaign_config(
+        args.config,
+        use_environment=True,
+        generator_models=args.generator_models,
+    )
     needs_ollama = args.phase in {"propose-contradictions", "generate", "all"} or (
         args.phase == "prepare" and args.translation_backend == "ollama"
     )
@@ -144,7 +155,12 @@ def main() -> None:
         print(json.dumps(status, ensure_ascii=False, indent=2))
 
     if args.phase in {"generate", "all"}:
-        status = generate_campaign(args.questions, args.working, args.config)
+        status = generate_campaign(
+            args.questions,
+            args.working,
+            args.config,
+            generator_models=args.generator_models,
+        )
         print(json.dumps(status, ensure_ascii=False, indent=2))
 
     if args.phase in {"finalize", "all"}:
@@ -154,6 +170,7 @@ def main() -> None:
             args.categories,
             args.manifest,
             args.config,
+            generator_models=args.generator_models,
         )
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
 

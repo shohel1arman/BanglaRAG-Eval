@@ -52,6 +52,7 @@ _HIDDEN_FIELDS = frozenset({
     "reranker",
     "generator_model",
     "generator_version",
+    "generator_model_details",
     "generation_settings",
     "raw_generated_output",
     "prompt_version",
