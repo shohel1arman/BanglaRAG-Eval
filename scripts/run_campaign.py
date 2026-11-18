@@ -51,7 +51,11 @@ def main() -> None:
     parser.add_argument("--config", default=os.environ.get("BANGLARAG_CAMPAIGN_CONFIG", "configs/campaign_50000_v3_unreviewed.yaml"))
     parser.add_argument("--source", default=os.environ.get("BANGLARAG_SOURCE_FILE", "data/raw/BanglaQuADv1.0-train.json"))
     parser.add_argument(
-        "--questions", default=os.environ.get("BANGLARAG_QUESTIONS_FILE", "data/intermediate/campaign_10000_questions_final_v2.jsonl")
+        "--questions",
+        default=os.environ.get(
+            "BANGLARAG_QUESTIONS_FILE",
+            "data/intermediate/campaign_10000_v2_questions.jsonl",
+        ),
     )
     parser.add_argument(
         "--reuse-translations",
@@ -95,6 +99,24 @@ def main() -> None:
         use_environment=True,
         generator_models=args.generator_models,
     )
+    if not Path(args.config).is_file():
+        raise SystemExit(
+            f"Campaign config not found: {args.config}\n"
+            "Set BANGLARAG_CAMPAIGN_CONFIG or pass --config "
+            "configs/campaign_50000_v3_unreviewed.yaml"
+        )
+    if args.phase in {"generate", "propose-contradictions", "review", "all"}:
+        missing_inputs = []
+        if not Path(args.questions).is_file():
+            missing_inputs.append(f"prepared questions: {args.questions}")
+        if args.phase in {"generate", "all"} and not Path(args.source).is_file():
+            missing_inputs.append(f"source dataset: {args.source}")
+        if missing_inputs:
+            raise SystemExit(
+                "Campaign input files are missing:\n- "
+                + "\n- ".join(missing_inputs)
+                + "\nRestore these files or pass --questions/--source to valid paths."
+            )
     needs_ollama = args.phase in {"propose-contradictions", "generate", "all"} or (
         args.phase == "prepare" and args.translation_backend == "ollama"
     )
