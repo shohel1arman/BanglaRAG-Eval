@@ -123,7 +123,7 @@ question files exist:
 
 ```bash
 test -f data/raw/BanglaQuADv1.0-train.json
-test -f data/intermediate/campaign_10000_v2_questions.jsonl
+test -f data/intermediate/campaign_50000_v3_questions.jsonl
 ollama list
 ```
 
@@ -998,7 +998,7 @@ passage-count-controlled evidence variants, and a mandatory two-reviewer gate.
 ```bash
 .venv/bin/python scripts/run_campaign.py review \
   --config configs/campaign_50000_v3_unreviewed.yaml \
-  --questions data/intermediate/campaign_10000_v2_questions.jsonl \
+  --questions data/intermediate/campaign_50000_v3_questions.jsonl \
   --overwrite-review-packet
 ```
 

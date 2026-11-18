@@ -49,7 +49,7 @@ Create the review packet with:
 ```bash
 python scripts/run_campaign.py review \
   --config configs/campaign_50000_v3_unreviewed.yaml \
-  --questions data/intermediate/campaign_10000_v2_questions.jsonl \
+  --questions data/intermediate/campaign_50000_v3_questions.jsonl \
   --overwrite-review-packet
 ```
 

@@ -54,7 +54,7 @@ def main() -> None:
         "--questions",
         default=os.environ.get(
             "BANGLARAG_QUESTIONS_FILE",
-            "data/intermediate/campaign_10000_v2_questions.jsonl",
+            "data/intermediate/campaign_50000_v3_questions.jsonl",
         ),
     )
     parser.add_argument(
