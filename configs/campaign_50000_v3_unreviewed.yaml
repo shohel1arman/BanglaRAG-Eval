@@ -18,7 +18,7 @@ source:
   license: MIT
 
 question_preparation:
-  file: data/intermediate/campaign_10000_v2_questions.jsonl
+  file: data/intermediate/campaign_50000_v3_questions.jsonl
   sha256: 439c6789e2fb4a5a49b22f827efa185ed4c6bb7f1abef89c54f33e43ccd8914b
   selection: seeded_article_balanced_round_robin
   source_questions: 1000
