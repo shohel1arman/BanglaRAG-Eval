@@ -19,7 +19,7 @@ source:
 
 question_preparation:
   file: data/intermediate/campaign_50000_v3_questions.jsonl
-  sha256: 439c6789e2fb4a5a49b22f827efa185ed4c6bb7f1abef89c54f33e43ccd8914b
+  sha256: b18f2068d3cdedc5f1159aaabe9326b9031155c0ea3c26bbe3c28647fac77bef
   selection: seeded_article_balanced_round_robin
   source_questions: 1000
   language_assignment: blocked_round_robin
@@ -130,7 +130,9 @@ contradiction_replacements:
   00ecf626-9fe5-4b45-ad70-bf39d67e96da: "প্রোটন"
   00f087dd-8a9c-44e5-a225-d33574dcde16: "পার্বত্য"
   010dcb2d-9b51-482c-8eb8-47e841bcbe0f: "২০২০ সালের ১৭ মার্চ"
+  83cb2101-7d8b-42f1-8434-d4d54afecbd9: "চোখ, কান ও ত্বকের"
   9bbeef0a-53c6-4f0d-90ac-54622620b045: "বিস্বাদ"
+  9dae6258-0268-4880-aadb-fe8de3c4e6ea: "অঙ্গজ বংশবিস্তার"
   b369edf1-5088-480f-873a-19518121cd35: "এমএসসি এনভায়রনমেন্টাল প্ল্যানিং"
 
 contradiction_replacements_file: data/intermediate/campaign_50000_v3_contradictions.jsonl
