@@ -10,6 +10,7 @@ This directory contains all project documentation for BanglaRAG-Eval.
 | [pilot_design.md](pilot_design.md) | Two-stage pilot study design with Stage 1 gates | Supervisor, implementers |
 | [data_schema.md](data_schema.md) | Canonical record schema, field definitions, validation rules R1–R10 | Implementers |
 | [GENERATION_OPTIMIZATION_GUIDE.md](GENERATION_OPTIMIZATION_GUIDE.md) | DeepSeek-R1 reasoning fix, max_tokens guide, logging explanation, and GPU parallel optimization | Implementers, researchers |
+| [TASK_LIST.md](TASK_LIST.md) | Master research task tracker, milestone progress (M1–M3), and model generation status | Implementers, researchers |
 | Root README | Annotator instructions — 5-way taxonomy, decision procedure, worked examples | Annotators |
 | [evaluation_protocol.md](evaluation_protocol.md) | Evaluator framework, metrics, statistics, circularity controls | Implementers, reviewers |
 
