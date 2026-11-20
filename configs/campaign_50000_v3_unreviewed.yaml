@@ -147,7 +147,19 @@ contradiction_generation:
 
 generation:
   temperature: 0.0
-  max_tokens: 256
+  # Non-reasoning models. Raised from 256 on 2026-11-20 after audit: 307
+  # llama3.2:3b, 38 phi3.5:3.8b and 7 qwen3:8b answers hit 256. Greedy
+  # decoding is identical up to the cap, so only truncated rows are regenerated.
+  max_tokens: 512
+  # Reasoning models ignore /no_think and emit untagged reasoning (qwen3:4b
+  # stored reasoning as the answer in 4,996/5,000 rows). Ollama think mode
+  # separates the trace; the budget covers reasoning + answer.
+  thinking_models:
+    - qwen3:4b
+    - deepseek-r1:32b
+  thinking_max_tokens: 4096
+  timeout: 1200
+  concurrency: 4
   prompt_version: rag_campaign_concise_v3
 
 review_gate:

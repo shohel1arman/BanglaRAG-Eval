@@ -157,8 +157,16 @@ def generate(
         ) from exc
 
     latency = time.time() - start_time
-    raw_response = data.get("response", "")
-    answer = _strip_thinking(raw_response)
+    response_text = data.get("response", "")
+    answer = _strip_thinking(response_text)
+    # With think=True, Ollama returns the reasoning trace in a separate
+    # "thinking" field. Keep it in the audit copy, never in the answer.
+    thinking_text = data.get("thinking") or ""
+    raw_response = (
+        f"<think>\n{thinking_text}\n</think>\n{response_text}"
+        if thinking_text
+        else response_text
+    )
     # Strip leading "Answer:" prefix that the model may echo from the prompt
     answer = re.sub(r'^\s*Answer:\s*', '', answer).strip()
 

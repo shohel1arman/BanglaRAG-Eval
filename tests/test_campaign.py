@@ -717,3 +717,84 @@ def test_review_packet_requires_two_independent_decisions(tmp_path: Path):
     approved = campaign._approved_review_scenarios(packet)
 
     assert set(approved) == {"qa|native_bangla|correct"}
+
+
+def test_thinking_models_use_think_mode_and_failures_do_not_stop_run(
+    tmp_path: Path, monkeypatch
+):
+    source = tmp_path / "source.json"
+    source.write_text(json.dumps(_source_payload(), ensure_ascii=False), encoding="utf-8")
+    questions = tmp_path / "questions.jsonl"
+    campaign.prepare_questions(source, questions, count=2, seed=7, transformer=_variants)
+    config = _campaign_config()
+    config["generation"].update(
+        {"thinking_models": ["model-a"], "thinking_max_tokens": 2048, "timeout": 900}
+    )
+    config_path = tmp_path / "campaign.yaml"
+    config_path.write_text(yaml.safe_dump(config, allow_unicode=True), encoding="utf-8")
+    monkeypatch.setattr(
+        campaign, "build_retriever", lambda method, **kwargs: _FakeRetriever(method)
+    )
+    calls: list[tuple[str, bool, int, int]] = []
+    fail_once_question: dict[str, str] = {}
+
+    def recording_generate(**kwargs) -> GenerationResult:
+        calls.append(
+            (kwargs["model"], kwargs["thinking"], kwargs["max_tokens"], kwargs["timeout"])
+        )
+        # Every call for one scenario of model-b returns an empty answer.
+        if kwargs["model"] == "model-b":
+            key = fail_once_question.setdefault("q", kwargs["question"] + kwargs["context"])
+            if key == kwargs["question"] + kwargs["context"]:
+                return GenerationResult(
+                    answer="", model="model-b", temperature=0.0, latency_seconds=0.01,
+                    eval_count=0, raw_response="", max_tokens=kwargs["max_tokens"],
+                )
+        return _fake_generate(**kwargs)
+
+    working = tmp_path / "working.jsonl"
+    status = campaign.generate_campaign(
+        questions, working, config_path, generation_function=recording_generate
+    )
+    assert {(m, t, n, s) for m, t, n, s in calls if m == "model-a"} == {
+        ("model-a", True, 2048, 900)
+    }
+    assert {(m, t, n, s) for m, t, n, s in calls if m == "model-b"} == {
+        ("model-b", False, 32, 900)
+    }
+    # One scenario failed three times: it is logged, left missing, and the run continued.
+    assert status["completed"] == 99 and status["missing"] == 1
+    failures = working.with_name(working.name + ".failures.jsonl")
+    logged = [json.loads(line) for line in failures.read_text(encoding="utf-8").splitlines()]
+    assert len(logged) == 1 and "empty answer" in logged[0]["error"]
+    rows = [json.loads(line) for line in working.read_text(encoding="utf-8").splitlines()]
+    assert all(r["generation_settings"]["thinking"] == (r["generator_model"] == "model-a") for r in rows)
+    with pytest.raises(ValueError, match="campaign incomplete"):
+        campaign.finalize_campaign(
+            working, tmp_path / "f.jsonl", tmp_path / "c.jsonl", tmp_path / "m.json", config_path
+        )
+
+
+def test_generate_keeps_think_mode_trace_out_of_answer(monkeypatch):
+    import io
+    from banglarag_eval.pipeline import generator as gen
+
+    payload = {
+        "response": "ঢাকা।",
+        "thinking": "Okay, the user asks about the capital.",
+        "done_reason": "stop",
+        "eval_count": 40,
+    }
+    sent: dict = {}
+
+    def fake_urlopen(req, timeout):
+        sent.update(json.loads(req.data))
+        return io.BytesIO(json.dumps(payload).encode("utf-8"))
+
+    monkeypatch.setattr(gen.urllib.request, "urlopen", fake_urlopen)
+    result = gen.generate("প্রশ্ন?", "প্রসঙ্গ", model="m", max_tokens=4096, thinking=True)
+    assert sent["think"] is True and sent["options"]["num_predict"] == 4096
+    assert result.answer == "ঢাকা।"
+    assert result.raw_response.startswith("<think>\nOkay, the user")
+    assert result.raw_response.endswith("ঢাকা।")
+    assert not result.truncated

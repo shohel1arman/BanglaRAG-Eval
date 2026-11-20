@@ -1703,7 +1703,20 @@ def generate_campaign(
     # Process one model at a time so a 16 GB local machine does not swap
     # Qwen and Gemma weights for every paired scenario.
     row_indices = {id(row): index for index, row in enumerate(rows)}
+    generation_config = config["generation"]
+    # Reasoning models (e.g. deepseek-r1, qwen3:4b) ignore /no_think and emit
+    # untagged reasoning. For them, Ollama's think mode separates the trace
+    # from the answer, and the token budget must cover reasoning + answer.
+    thinking_models = set(generation_config.get("thinking_models", []))
+    request_timeout = int(generation_config.get("timeout", 300))
+    failures_path = output.with_name(output.name + ".failures.jsonl")
     for model in config["generator_models"]:
+        use_thinking = model in thinking_models
+        model_max_tokens = int(
+            generation_config.get("thinking_max_tokens", generation_config["max_tokens"])
+            if use_thinking
+            else generation_config["max_tokens"]
+        )
         pending: list[tuple[dict[str, Any], str]] = []
         for scenario in prepared_scenarios:
             row = scenario["row"]
@@ -1723,7 +1736,7 @@ def generate_campaign(
 
         def generate_record(
             job: tuple[dict[str, Any], str],
-        ) -> tuple[dict[str, Any], str, str, str]:
+        ) -> tuple[dict[str, Any], str, str, str] | dict[str, Any]:
             scenario, example_id = job
             row = scenario["row"]
             language = scenario["language"]
@@ -1753,9 +1766,10 @@ def generate_campaign(
                         context=context,
                         model=model,
                         temperature=config["generation"]["temperature"],
-                        max_tokens=config["generation"]["max_tokens"],
-                        timeout=300,
+                        max_tokens=model_max_tokens,
+                        timeout=request_timeout,
                         prompt_template=CAMPAIGN_RAG_PROMPT,
+                        thinking=use_thinking,
                     )
                     if not result.answer.strip():
                         raise RuntimeError("generator returned an empty answer")
@@ -1763,9 +1777,15 @@ def generate_campaign(
                 except (ConnectionError, RuntimeError, TimeoutError) as exc:
                     last_error = exc
             else:
-                raise RuntimeError(
-                    f"generation failed three times for {example_id}: {last_error}"
-                )
+                # Do not write a placeholder and do not stop the whole run:
+                # the record stays missing, so a later rerun retries it and
+                # finalize refuses an incomplete campaign.
+                return {
+                    "example_id": example_id,
+                    "model": model,
+                    "error": f"generation failed three times: {last_error}",
+                    "timestamp": _now(),
+                }
             timestamp = _now()
             start = row["answer_start"]
             question_language, data_origin = LANGUAGE_METADATA[language]
@@ -1817,6 +1837,7 @@ def generate_campaign(
                     "token_count": result.eval_count,
                     "finish_reason": result.finish_reason,
                     "truncated": result.truncated,
+                    "thinking": use_thinking,
                     "prompt_template": config["generation"]["prompt_version"],
                 },
                 "context_language": "none" if not evidence["context"] else "bn",
@@ -1855,7 +1876,12 @@ def generate_campaign(
             results = executor.map(generate_record, pending)
 
         try:
-            for record, language, evidence_condition, method in results:
+            for outcome in results:
+                if isinstance(outcome, dict):
+                    _append_jsonl(failures_path, outcome)
+                    print(f"[campaign FAILED] {outcome['example_id']}: {outcome['error']}")
+                    continue
+                record, language, evidence_condition, method = outcome
                 example_id = record["example_id"]
                 # executor.map yields in input order, preserving deterministic JSONL order.
                 if example_id in completed:
